@@ -1,0 +1,94 @@
+module Main where
+
+import Daml.Script
+
+type DealProposalId = ContractId DealProposal
+type DealContractId = ContractId DealContract
+
+-- the proposal
+template DealProposal
+    with 
+        proposer : Party
+        authority : Party
+        deal : Text
+        note : Text
+
+    where 
+        signatory proposer
+
+        -- Choices available for the proposer
+        controller proposer can
+        -- Propose deal
+            Propose : DealProposalId
+                do
+                    create this
+
+        -- Revise the proposal if rejected
+            Revise : DealProposalId
+                with
+                    revisedDeal : Text
+                    newNote : Text
+                do
+                    create this with
+                        deal = revisedDeal
+                        note = newNote
+
+        -- Choices for the authority
+        controller authority can
+            -- Reject the proposal
+            Reject : DealProposalId
+                with
+                    feedback : Text
+                do 
+                    create this with 
+                        note = feedback
+            
+            -- Accept the proposal
+            Accept : DealContractId
+                do 
+                    create DealContract with
+                        proposerInContract = proposer
+                        authorityInContract = authority
+                        agreedDeal = deal
+
+-- The contract template
+template DealContract
+    with
+        proposerInContract : Party
+        authorityInContract : Party
+        agreedDeal : Text
+
+    where 
+        signatory proposerInContract, authorityInContract
+
+-- Tests
+setup : Script DealContractId = script do
+    -- Assign the parties to the test parties
+    tom <- allocateParty "Tom"
+    jerry <- allocateParty "Jerry"
+    
+    -- Jerry proposes to massage Tom from 1 minute
+    jerryInitialProposal <- submit jerry do
+        createCmd DealProposal with
+            proposer = jerry
+            authority = tom
+            deal = "I will massage you for 1 minute in exchange for your milk tomorrow morning."
+            note = "Hey Tom, check out this proposal. Agreed?"
+
+    -- Tom rejects the proposal and provides a counterproposal
+    tomReject <- submit tom do
+        exerciseCmd jerryInitialProposal Reject with
+            feedback = "No way, are you nuts? How about 30 minutes per day for 5 days?"
+
+    -- Jerry revises the proposal 
+    jerryRevisedProposal <- submit jerry do
+        exerciseCmd tomReject Revise with
+            revisedDeal = "I will massage you for 30 minutes only in exchange for your milk tomorrow morning."
+            newNote = "Okay, how about that? :("
+
+    -- Tom accepts the proposal
+    submit tom do
+        exerciseCmd jerryRevisedProposal Accept 
+
+
+        

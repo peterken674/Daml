@@ -1,0 +1,6 @@
+18:10:02.022 [sandbox-akka.actor.default-dispatcher-4] INFO  akka.event.slf4j.Slf4jLogger - Slf4jLogger started 
+18:10:20.296 [program-resource-pool-4] INFO  c.d.p.apiserver.LedgerApiServer - Listening on localhost:6865 over plain text. 
+18:10:20.478 [program-resource-pool-3] INFO  com.daml.platform.sandboxnext.Runner - Initialized sandbox version 1.16.0 with ledger-id = 6330d101-d1ec-4924-8b1f-c2920fc3d0c2, port = 6865, dar file = List(.daml\dist\MyFirstDamlApp-0.0.1.dar), time mode = wall-clock time, ledger = in-memory, auth-service = AuthServiceWildcard$, contract ids seeding = strong 
+18:22:03.702 [sandbox-akka.actor.default-dispatcher-4] INFO  akka.event.slf4j.Slf4jLogger - Slf4jLogger started 
+18:22:15.965 [program-resource-pool-2] INFO  c.d.p.apiserver.LedgerApiServer - Listening on localhost:6865 over plain text. 
+18:22:16.022 [program-resource-pool-1] INFO  com.daml.platform.sandboxnext.Runner - Initialized sandbox version 1.16.0 with ledger-id = ea423c42-872a-4c4f-9160-7fb89000d054, port = 6865, dar file = List(.daml\dist\MyFirstDamlApp-0.0.1.dar), time mode = wall-clock time, ledger = in-memory, auth-service = AuthServiceWildcard$, contract ids seeding = strong 
